@@ -14,11 +14,25 @@
     </ul>
   </div>
 
+  <style>
+    .active { background-color: green }
+    .instruction { background-color: orange }
+  </style>
+
   <div class="col-md-8">
     <h1>{{ session.name }}</h1>
-    <a data-ng-click="createBlock()">+ Create Block
-    </a>
-    <p>{{ link }}</p>
+    <a href=""
+       data-ng-show="blocks[blocks.length - 1].status == 'closed' || blocks.length == 0"
+       data-ng-click="createBlock(session)">+ Create Block</a>
+    <div data-ng-class="block.status" data-ng-repeat="block in blocks | orderBy: '-created_on'">
+      <p>Created: {{ block.created_on }}</p>
+      <a href=""
+         data-ng-hide="block.status == 'active' || block.status == 'closed'"
+         data-ng-click="stopBlock(block)">Stop</a>
+      <a href=""
+         data-ng-hide="block.status == 'instruction' || block.status == 'closed'"
+         data-ng-click="endBlock(block)">End</a>
+    </div>
   </div>
   <div class="col-md-2">
     <h6>Members</h6>
