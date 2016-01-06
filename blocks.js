@@ -24,13 +24,14 @@ exports.create = function(req, res) {
 };
 
 exports.all = function(req, res) {
+  var query = req.query.session ? req.query : {};
   Block
-    .find()
+    .find(query)
     .populate('session')
     .then(function(result) {
       res.json(result);
     }, function(err) {
-      res.status(401).json(err);
+      res.status(400).json(err);
     });
 };
 

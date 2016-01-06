@@ -9,10 +9,13 @@ angular
         controller: "SessionCtrl",
         templateUrl: "/session.html",
         resolve: {
-          blocks: function ($http) {
+          blocks: function ($http, $stateParams) {
             return $http({
               method: 'get',
-              url: '/blocks'
+              url: '/blocks',
+              params: {
+                session: $stateParams.id
+              }
             }).then(function (res) {
               return res.data;
             });
@@ -37,7 +40,11 @@ angular
       });
     $urlRouterProvider.otherwise('/session/');
   })
-  .controller('SessionCtrl', function ($scope, $http, $stateParams, sessions, session, blocks) {
+  .controller('SessionCtrl', function ($scope, $http, $state, $stateParams, sessions, session, blocks) {
+    if (!$stateParams.id && sessions.length) {
+      $state.go('session', {id: sessions[0]._id});
+      return;
+    }
     socket.emit('enter-room', {session_id: $stateParams.id, user_id: '566f54028750c50d3fb227f1'});
     $scope.newSession = {};
     $scope.sessions = sessions;
