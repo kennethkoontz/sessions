@@ -1,0 +1,21 @@
+<div>
+  <a href=""
+     data-ng-show="blocks[blocks.length - 1].status == 'closed' || blocks.length == 0"
+     data-ng-click="createBlock(session)">+ Create Block</a>
+</div>
+
+<div class="panel"
+     data-ng-class="{'panel-warning': block.status == 'instruction', 'panel-success': block.status == 'active', 'panel-default': 'closed'}"
+     data-ng-repeat="block in blocks | orderBy: '-created_on'">
+  <div class="panel-heading">
+    <p>Created: {{ block.created_on }}</p>
+  </div>
+  <div class="panel-body">
+    <a href=""
+       data-ng-hide="block.status == 'active' || block.status == 'closed'"
+       data-ng-click="stopBlock(block)">Stop</a>
+    <a href=""
+       data-ng-hide="block.status == 'instruction' || block.status == 'closed'"
+       data-ng-click="endBlock(block)">End</a>
+  </div>
+</div>

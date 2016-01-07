@@ -1,51 +1,10 @@
 <div class="row">
-
-  <div class="col-md-2">
-    <a data-ng-show="!newSession.active" data-ng-click="activateNewSession()">+ Create Session</a>
-    <input type="text" data-ng-model="newSession.name" data-ng-keypress="createSession($event)" data-ng-show="newSession.active"/>
-    <ul>
-      <li data-ng-repeat="session in sessions">
-        <a data-ui-sref="session({id: session._id})">{{ session.name }}</a>
-        <span class="glyphicon glyphicon-share"
-              aria-hidden="true"
-              data-ng-click="shareSessionLink()">
-        </span>
-      </li>
-    </ul>
-  </div>
-
   <style>
-    .active { background-color: green }
+    div.active { background-color: green }
     .instruction { background-color: orange }
   </style>
 
-  <div class="col-md-8">
-    <h1>{{ session.name }}</h1>
-    <div class="well" data-ng-show="sessions.length == 0">
-      You can create a session by using the '+ Create Session' on the left.
-    </div>
-    <div data-ng-hide="sessions.length == 0">
-      <a href=""
-         data-ng-show="blocks[blocks.length - 1].status == 'closed' || blocks.length == 0"
-         data-ng-click="createBlock(session)">+ Create Block</a>
-    </div>
-    <div data-ng-class="block.status" data-ng-repeat="block in blocks | orderBy: '-created_on'">
-      <p>Created: {{ block.created_on }}</p>
-      <a href=""
-         data-ng-hide="block.status == 'active' || block.status == 'closed'"
-         data-ng-click="stopBlock(block)">Stop</a>
-      <a href=""
-         data-ng-hide="block.status == 'instruction' || block.status == 'closed'"
-         data-ng-click="endBlock(block)">End</a>
-    </div>
-  </div>
-  <div class="col-md-2">
-    <h6>Members</h6>
-    <ul>
-      <li data-ng-repeat="member in session.members">
-        {{ member.user.first_name }} {{ member.user.last_name }}
-      </li>
-    </ul>
-  </div>
-
+  <div class="col-md-2" ui-view="sessions"></div>
+  <div class="col-md-8" ui-view="blocks"></div>
+  <div class="col-md-2" ui-view="members"></div>
 </div>
