@@ -84,7 +84,10 @@ exports.authenticate = function authenticate(req, res) {
           if (err)
             res.status(400).json(err);
           else
-            res.json({ token: token });
+            res.json({
+              token: token,
+              user: result
+            });
         });
       } else {
         res.status(403).send('Not Authorized');

@@ -1,6 +1,7 @@
 angular
   .module('app', [
-    'ui.router'
+    'ui.router',
+    'ngStorage'
   ])
   .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
@@ -85,11 +86,11 @@ angular
       });
     $urlRouterProvider.otherwise('/session/');
   })
-  .controller('BlocksCtrl', function ($scope, $http, $stateParams, $state, blocks, session, sessions) {
+  .controller('BlocksCtrl', function ($scope, $http, $stateParams, $state, $sessionStorage, blocks, session, sessions) {
     if ($stateParams.id == '' && sessions.length > 0)
       $state.go('main.session', {id: sessions[0]._id});
 
-    socket.emit('enter-room', {session_id: $stateParams.id, user_id: '566f54028750c50d3fb227f1'});
+    socket.emit('enter-room', {session_id: $stateParams.id, user_id: $sessionStorage.user._id});
     $scope.session = session;
     $scope.blocks = blocks;
     $scope.createBlock = function (session) {
@@ -157,31 +158,34 @@ angular
       $scope.link = $scope.session.link;
     };
   })
-  .controller('LoginCtrl', function($scope, $http) {
+  .controller('LoginCtrl', function ($scope, $http, $sessionStorage, $state) {
     $scope.form = {};
 
-    $scope.submit = function() {
+    $scope.submit = function () {
       $http({
         method: 'post',
         url: '/authenticate',
         data: $scope.form
-      }).then(function(res) {
-        console.log(res);
-      }, function(err) {
-        console.log(err);
+      }).then(function (res) {
+        $sessionStorage.token = res.data.token;
+        $sessionStorage.user = res.data.user;
+        $state.go('main.session');
+      }, function (err) {
+        // TODO let user know that it's a bad user password combo
+        $sessionStorage.$reset();
       });
     };
   })
-  .controller('RegisterCtrl', function($scope, $http) {
+  .controller('RegisterCtrl', function ($scope, $http) {
     $scope.form = {};
-    $scope.submit = function() {
+    $scope.submit = function () {
       $http({
         method: 'post',
         url: '/users',
         data: $scope.form
-      }).then(function(res) {
+      }).then(function (res) {
         console.log(res)
-      }, function(err) {
+      }, function (err) {
         console.log(err);
       });
     };
