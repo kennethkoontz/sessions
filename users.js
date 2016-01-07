@@ -1,6 +1,7 @@
 var passwordHash = require('password-hash');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var jwt = require('json-web-token');
 var userSchema = new Schema({
   first_name: String,
   last_name: String,
@@ -78,17 +79,12 @@ exports.authenticate = function authenticate(req, res) {
   User
     .findOne({ email: req.body.email })
     .then(function(result) {
-      var user;
-      var isVerified = passwordHash.verify(req.body.password, result.password);
-
-      if (isVerified) {
-        user = result;
-        jwt.encode(process.env.JWT_SECRET, result, function (err, token) {
-          user.token = token;
-          if (err) 
+      if (passwordHash.verify(req.body.password, result.password)) {
+        jwt.encode(process.env.JWT_SECRET, result._id, function (err, token) {
+          if (err)
             res.status(400).json(err);
           else
-            res.json(user);
+            res.json({ token: token });
         });
       } else {
         res.status(403).send('Not Authorized');

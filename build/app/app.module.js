@@ -9,6 +9,11 @@ angular
         templateUrl: '/login.html',
         controller: 'LoginCtrl'
       })
+      .state('register', {
+        url: '/register',
+        templateUrl: '/register.html',
+        controller: 'RegisterCtrl'
+      })
       .state('main', {
         templateUrl: '/session.html'
       })
@@ -166,5 +171,18 @@ angular
         console.log(err);
       });
     };
-
+  })
+  .controller('RegisterCtrl', function($scope, $http) {
+    $scope.form = {};
+    $scope.submit = function() {
+      $http({
+        method: 'post',
+        url: '/users',
+        data: $scope.form
+      }).then(function(res) {
+        console.log(res)
+      }, function(err) {
+        console.log(err);
+      });
+    };
   });
