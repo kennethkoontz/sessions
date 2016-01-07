@@ -4,6 +4,11 @@ angular
   ])
   .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
+      .state('login', {
+        url: "/login",
+        templateUrl: '/login.html',
+        controller: 'LoginCtrl'
+      })
       .state('main', {
         templateUrl: '/session.html'
       })
@@ -146,4 +151,20 @@ angular
     $scope.shareSessionLink = function () {
       $scope.link = $scope.session.link;
     };
+  })
+  .controller('LoginCtrl', function($scope, $http) {
+    $scope.form = {};
+
+    $scope.submit = function() {
+      $http({
+        method: 'post',
+        url: '/authenticate',
+        data: $scope.form
+      }).then(function(res) {
+        console.log(res);
+      }, function(err) {
+        console.log(err);
+      });
+    };
+
   });
